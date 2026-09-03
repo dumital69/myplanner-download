@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPlanner — Politika privatnosti / Privacy Policy</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --border: #e5e7eb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+  .toggle {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .toggle button {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .toggle button.active {
+    background: var(--accent);
+    color: white;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  h2 {
+    font-size: 1.05rem;
+    margin-top: 28px;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  h2:first-child { margin-top: 0; }
+  p, li { font-size: 0.95rem; color: var(--text); }
+  ul { padding-left: 20px; }
+  .updated {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+  .lang { display: none; }
+  .lang.active { display: block; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>MyPlanner</h1>
+      <div class="updated" data-updated>Poslednja izmena: <span id="dateSr">31.08.2026.</span></div>
+    </div>
+    <div class="toggle">
+      <button id="btnSr" class="active" onclick="setLang('sr')">SR</button>
+      <button id="btnEn" onclick="setLang('en')">EN</button>
+    </div>
+  </header>
+
+  <div class="card">
+
+    <!-- SERBIAN -->
+    <div id="sr" class="lang active">
+      <h2>Politika privatnosti — MyPlanner</h2>
+      <p>MyPlanner (BDPSoft) je aplikacija za planiranje zadataka. Ova politika objašnjava koje podatke prikupljamo, zašto, i kako ih štitimo.</p>
+
+      <h2>Koje podatke prikupljamo</h2>
+      <ul>
+        <li><strong>Email adresa</strong> — koristi se isključivo za prijavu (autentikaciju) i identifikaciju naloga preko Firebase Authentication servisa.</li>
+        <li><strong>Status pretplate</strong> — informacija do kog datuma je nalog aktivan (polje „paidUntil"), koju administrator ručno upisuje nakon što proveri uplatu.</li>
+      </ul>
+
+      <h2>Šta NE prikupljamo</h2>
+      <p>Svi vaši zadaci, podzadaci i beleške čuvaju se <strong>isključivo lokalno</strong> na vašem uređaju (u lokalnoj memoriji telefona). Ti podaci se nikada ne šalju na server niti su vidljivi razvojnom timu. Ako obrišete aplikaciju ili nalog, ti podaci se trajno brišu.</li>
+
+      <h2>Plaćanje</h2>
+      <p>Pretplata se trenutno plaća preko PayPal-a, direktno između vas i administratora. Aplikacija ne obrađuje niti čuva podatke o platnim karticama — PayPal transakcije su van naše kontrole i podležu PayPal-ovoj sopstvenoj politici privatnosti.</p>
+
+      <h2>Gde se podaci čuvaju</h2>
+      <p>Email i status pretplate čuvaju se na Firebase Realtime Database serveru (region Evropa — europe-west1), servis kompanije Google. Podaci se prenose šifrovano.</p>
+
+      <h2>Deljenje sa trećim stranama</h2>
+      <p>Ne prodajemo niti delimo vaše podatke trećim stranama u marketinške svrhe. Jedini spoljni servisi koje koristimo su Firebase (Google) za autentikaciju i PayPal za plaćanje.</p>
+
+      <h2>Brisanje naloga</h2>
+      <p>U svakom trenutku možete zatražiti brisanje naloga direktno kroz aplikaciju (opcija za brisanje naloga briše i sve lokalne podatke) ili slanjem zahteva na email ispod.</p>
+
+      <h2>Deca</h2>
+      <p>Aplikacija nije namenjena deci mlađoj od 16 godina i svesno ne prikupljamo podatke od dece.</p>
+
+      <h2>Izmene ove politike</h2>
+      <p>Ova politika se može povremeno ažurirati. Datum poslednje izmene naveden je na vrhu stranice.</p>
+
+      <h2>Kontakt</h2>
+      <p>Za sva pitanja u vezi sa privatnošću: <strong>bdp69soft@gmail.com</strong></p>
+    </div>
+
+    <!-- ENGLISH -->
+    <div id="en" class="lang">
+      <h2>Privacy Policy — MyPlanner</h2>
+      <p>MyPlanner (BDPSoft) is a task planning app. This policy explains what data we collect, why, and how we protect it.</p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li><strong>Email address</strong> — used solely for login (authentication) and account identification via Firebase Authentication.</li>
+        <li><strong>Subscription status</strong> — the date until which an account is active ("paidUntil" field), set manually by the administrator after verifying payment.</li>
+      </ul>
+
+      <h2>What we do NOT collect</h2>
+      <p>All your tasks, subtasks, and notes are stored <strong>exclusively on your device</strong> (local storage). This data is never sent to a server and is never visible to the development team. Deleting the app or your account permanently deletes this data.</p>
+
+      <h2>Payment</h2>
+      <p>Subscriptions are currently paid via PayPal, directly between you and the administrator. The app does not process or store any card details — PayPal transactions are outside our control and are governed by PayPal's own privacy policy.</p>
+
+      <h2>Where data is stored</h2>
+      <p>Email and subscription status are stored on Firebase Realtime Database (Europe region — europe-west1), a Google service. Data is transmitted encrypted.</p>
+
+      <h2>Sharing with third parties</h2>
+      <p>We do not sell or share your data with third parties for marketing purposes. The only external services we use are Firebase (Google) for authentication and PayPal for payment.</p>
+
+      <h2>Account deletion</h2>
+      <p>You may request account deletion at any time directly within the app (the delete-account option also removes all local data) or by emailing the address below.</p>
+
+      <h2>Children</h2>
+      <p>The app is not directed at children under 16, and we do not knowingly collect data from children.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>This policy may be updated occasionally. The date of the last update is shown at the top of the page.</p>
+
+      <h2>Contact</h2>
+      <p>For any privacy-related questions: <strong>bdp69soft@gmail.com</strong></p>
+    </div>
+
+  </div>
+
+  <footer>MyPlanner — BDPSoft</footer>
+</div>
+
+<script>
+function setLang(lang) {
+  document.querySelectorAll('.lang').forEach(el => el.classList.remove('active'));
+  document.getElementById(lang).classList.add('active');
+  document.getElementById('btnSr').classList.toggle('active', lang === 'sr');
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+}
+</script>
+
+</body>
+</html>
