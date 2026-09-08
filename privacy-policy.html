@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyPlanner — Politika privatnosti / Privacy Policy</title>
+<title>MyPlanner — Privacy Policy / Politika privatnosti</title>
 <style>
   :root {
     --bg: #f7f8fa;
@@ -93,54 +93,18 @@
   <header>
     <div>
       <h1>MyPlanner</h1>
-      <div class="updated" data-updated>Poslednja izmena: <span id="dateSr">31.08.2026.</span></div>
+      <div class="updated">Last updated / Poslednja izmena: <span id="dateEn">2026-09-01</span></div>
     </div>
     <div class="toggle">
-      <button id="btnSr" class="active" onclick="setLang('sr')">SR</button>
-      <button id="btnEn" onclick="setLang('en')">EN</button>
+      <button id="btnEn" class="active" onclick="setLang('en')">EN</button>
+      <button id="btnSr" onclick="setLang('sr')">SR</button>
     </div>
   </header>
 
   <div class="card">
 
-    <!-- SERBIAN -->
-    <div id="sr" class="lang active">
-      <h2>Politika privatnosti — MyPlanner</h2>
-      <p>MyPlanner (BDPSoft) je aplikacija za planiranje zadataka. Ova politika objašnjava koje podatke prikupljamo, zašto, i kako ih štitimo.</p>
-
-      <h2>Koje podatke prikupljamo</h2>
-      <ul>
-        <li><strong>Email adresa</strong> — koristi se isključivo za prijavu (autentikaciju) i identifikaciju naloga preko Firebase Authentication servisa.</li>
-        <li><strong>Status pretplate</strong> — informacija do kog datuma je nalog aktivan (polje „paidUntil"), koju administrator ručno upisuje nakon što proveri uplatu.</li>
-      </ul>
-
-      <h2>Šta NE prikupljamo</h2>
-      <p>Svi vaši zadaci, podzadaci i beleške čuvaju se <strong>isključivo lokalno</strong> na vašem uređaju (u lokalnoj memoriji telefona). Ti podaci se nikada ne šalju na server niti su vidljivi razvojnom timu. Ako obrišete aplikaciju ili nalog, ti podaci se trajno brišu.</li>
-
-      <h2>Plaćanje</h2>
-      <p>Pretplata se trenutno plaća preko PayPal-a, direktno između vas i administratora. Aplikacija ne obrađuje niti čuva podatke o platnim karticama — PayPal transakcije su van naše kontrole i podležu PayPal-ovoj sopstvenoj politici privatnosti.</p>
-
-      <h2>Gde se podaci čuvaju</h2>
-      <p>Email i status pretplate čuvaju se na Firebase Realtime Database serveru (region Evropa — europe-west1), servis kompanije Google. Podaci se prenose šifrovano.</p>
-
-      <h2>Deljenje sa trećim stranama</h2>
-      <p>Ne prodajemo niti delimo vaše podatke trećim stranama u marketinške svrhe. Jedini spoljni servisi koje koristimo su Firebase (Google) za autentikaciju i PayPal za plaćanje.</p>
-
-      <h2>Brisanje naloga</h2>
-      <p>U svakom trenutku možete zatražiti brisanje naloga direktno kroz aplikaciju (opcija za brisanje naloga briše i sve lokalne podatke) ili slanjem zahteva na email ispod.</p>
-
-      <h2>Deca</h2>
-      <p>Aplikacija nije namenjena deci mlađoj od 16 godina i svesno ne prikupljamo podatke od dece.</p>
-
-      <h2>Izmene ove politike</h2>
-      <p>Ova politika se može povremeno ažurirati. Datum poslednje izmene naveden je na vrhu stranice.</p>
-
-      <h2>Kontakt</h2>
-      <p>Za sva pitanja u vezi sa privatnošću: <strong>bdp69soft@gmail.com</strong></p>
-    </div>
-
     <!-- ENGLISH -->
-    <div id="en" class="lang">
+    <div id="en" class="lang active">
       <h2>Privacy Policy — MyPlanner</h2>
       <p>MyPlanner (BDPSoft) is a task planning app. This policy explains what data we collect, why, and how we protect it.</p>
 
@@ -157,7 +121,7 @@
       <p>Subscriptions are currently paid via PayPal, directly between you and the administrator. The app does not process or store any card details — PayPal transactions are outside our control and are governed by PayPal's own privacy policy.</p>
 
       <h2>Where data is stored</h2>
-      <p>Email and subscription status are stored on Firebase Realtime Database (Europe region — europe-west1), a Google service. Data is transmitted encrypted.</p>
+      <p>Email and subscription status are stored on Firebase Realtime Database (EU region), a Google service. Data does not leave the EU and is transmitted encrypted.</p>
 
       <h2>Sharing with third parties</h2>
       <p>We do not sell or share your data with third parties for marketing purposes. The only external services we use are Firebase (Google) for authentication and PayPal for payment.</p>
@@ -175,6 +139,42 @@
       <p>For any privacy-related questions: <strong>bdp69soft@gmail.com</strong></p>
     </div>
 
+    <!-- SERBIAN -->
+    <div id="sr" class="lang">
+      <h2>Politika privatnosti — MyPlanner</h2>
+      <p>MyPlanner (BDPSoft) je aplikacija za planiranje zadataka. Ova politika objašnjava koje podatke prikupljamo, zašto, i kako ih štitimo.</p>
+
+      <h2>Koje podatke prikupljamo</h2>
+      <ul>
+        <li><strong>Email adresa</strong> — koristi se isključivo za prijavu (autentikaciju) i identifikaciju naloga preko Firebase Authentication servisa.</li>
+        <li><strong>Status pretplate</strong> — informacija do kog datuma je nalog aktivan (polje „paidUntil"), koju administrator ručno upisuje nakon što proveri uplatu.</li>
+      </ul>
+
+      <h2>Šta NE prikupljamo</h2>
+      <p>Svi vaši zadaci, podzadaci i beleške čuvaju se <strong>isključivo lokalno</strong> na vašem uređaju (u lokalnoj memoriji telefona). Ti podaci se nikada ne šalju na server niti su vidljivi razvojnom timu. Ako obrišete aplikaciju ili nalog, ti podaci se trajno brišu.</p>
+
+      <h2>Plaćanje</h2>
+      <p>Pretplata se trenutno plaća preko PayPal-a, direktno između vas i administratora. Aplikacija ne obrađuje niti čuva podatke o platnim karticama — PayPal transakcije su van naše kontrole i podležu PayPal-ovoj sopstvenoj politici privatnosti.</p>
+
+      <h2>Gde se podaci čuvaju</h2>
+      <p>Email i status pretplate čuvaju se na Firebase Realtime Database serveru (EU region), servis kompanije Google. Podaci ne napuštaju EU i prenose se šifrovano.</p>
+
+      <h2>Deljenje sa trećim stranama</h2>
+      <p>Ne prodajemo niti delimo vaše podatke trećim stranama u marketinške svrhe. Jedini spoljni servisi koje koristimo su Firebase (Google) za autentikaciju i PayPal za plaćanje.</p>
+
+      <h2>Brisanje naloga</h2>
+      <p>U svakom trenutku možete zatražiti brisanje naloga direktno kroz aplikaciju (opcija za brisanje naloga briše i sve lokalne podatke) ili slanjem zahteva na email ispod.</p>
+
+      <h2>Deca</h2>
+      <p>Aplikacija nije namenjena deci mlađoj od 16 godina i svesno ne prikupljamo podatke od dece.</p>
+
+      <h2>Izmene ove politike</h2>
+      <p>Ova politika se može povremeno ažurirati. Datum poslednje izmene naveden je na vrhu stranice.</p>
+
+      <h2>Kontakt</h2>
+      <p>Za sva pitanja u vezi sa privatnošću: <strong>bdp69soft@gmail.com</strong></p>
+    </div>
+
   </div>
 
   <footer>MyPlanner — BDPSoft</footer>
@@ -184,8 +184,8 @@
 function setLang(lang) {
   document.querySelectorAll('.lang').forEach(el => el.classList.remove('active'));
   document.getElementById(lang).classList.add('active');
-  document.getElementById('btnSr').classList.toggle('active', lang === 'sr');
   document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+  document.getElementById('btnSr').classList.toggle('active', lang === 'sr');
 }
 </script>
 

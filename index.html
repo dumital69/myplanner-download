@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyPlanner — Preuzimanje</title>
+<title>MyPlanner — Download</title>
 <style>
   :root {
     --bg: #0f1420;
@@ -25,17 +25,37 @@
   .wrap {
     max-width: 640px;
     margin: 0 auto;
-    padding: 48px 20px 80px;
+    padding: 32px 20px 80px;
   }
-  .logo {
-    text-align: center;
-    font-size: 2.2rem;
-    margin-bottom: 4px;
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 12px;
+    flex-wrap: wrap;
   }
-  .tagline {
-    text-align: center;
+  .logo { font-size: 1.8rem; margin: 0; }
+  .toggle {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .toggle button {
+    border: none;
+    background: transparent;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
     color: var(--muted);
-    margin-bottom: 32px;
+  }
+  .toggle button.active { background: var(--accent); color: white; }
+  .tagline {
+    color: var(--muted);
+    margin-bottom: 28px;
     font-size: 0.95rem;
   }
   .card {
@@ -70,10 +90,7 @@
     margin-bottom: 14px;
     color: var(--accent);
   }
-  ol {
-    padding-left: 20px;
-    margin: 0;
-  }
+  ol, ul { padding-left: 20px; margin: 0; }
   li { margin-bottom: 10px; font-size: 0.95rem; }
   .warn {
     background: #2a2210;
@@ -91,56 +108,124 @@
     margin-top: 24px;
   }
   footer a { color: var(--accent); }
+  .lang { display: none; }
+  .lang.active { display: block; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="logo">☁️ MyPlanner</div>
-  <div class="tagline">Planer zadataka — jednostavan, privatan, besplatan</div>
-
-  <div class="card">
-    <!-- ID_PREUZIMANJA: link ispod treba zameniti stvarnim linkom sa GitHub Releases stranice -->
-    <a class="download-btn" href="https://github.com/dumital69/myplanner-download/releases/download/v2.2/app-release.apk" id="downloadLink">⬇️ Preuzmi za Android</a>
-    <p class="version-note">Najnovija verzija · Android 7.0 i noviji</p>
-  </div>
-
-  <div class="card">
-    <h2>Kako instalirati</h2>
-    <ol>
-      <li>Klikni dugme za preuzimanje iznad — fajl (<code>.apk</code>) će se skinuti na telefon.</li>
-      <li>Otvori preuzeti fajl. Ako se pojavi upozorenje "Instalacija iz nepoznatih izvora nije dozvoljena", dodirni <strong>Podešavanja</strong> u tom prozoru i uključi dozvolu za pregledač/aplikaciju preko koje si preuzeo fajl.</li>
-      <li>Vrati se i pokušaj instalaciju ponovo — sad će proći.</li>
-      <li>Otvori MyPlanner i napravi nalog (ili se prijavi ako ga već imaš).</li>
-    </ol>
-    <div class="warn">
-      ⚠️ MyPlanner se ne distribuira preko Google Play prodavnice, pa Android po difoltu blokira instalaciju iz nepoznatih izvora — to je normalno i očekivano, ne znači da je fajl nebezbedan.
+  <header>
+    <h1 class="logo">☁️ MyPlanner</h1>
+    <div class="toggle">
+      <button id="btnEn" class="active" onclick="setLang('en')">EN</button>
+      <button id="btnSr" onclick="setLang('sr')">SR</button>
     </div>
+  </header>
+
+  <!-- ENGLISH -->
+  <div id="en" class="lang active">
+    <div class="tagline">Task planner — simple, private, free</div>
+
+    <div class="card">
+      <a class="download-btn" href="https://github.com/dumital69/myplanner-download/releases/download/v2.2/app-release.apk" id="downloadLinkEn">⬇️ Download for Android</a>
+      <p class="version-note">Latest version · Android 7.0 and up</p>
+    </div>
+
+    <div class="card">
+      <h2>How to install</h2>
+      <ol>
+        <li>Tap the download button above — the file (<code>.apk</code>) will download to your phone.</li>
+        <li>Open the downloaded file. If you see a warning "Installation from unknown sources is not allowed", tap <strong>Settings</strong> in that dialog and enable the permission for the browser/app you used to download it.</li>
+        <li>Go back and try installing again — it will work this time.</li>
+        <li>Open MyPlanner and create an account (or sign in if you already have one).</li>
+      </ol>
+      <div class="warn">
+        ⚠️ MyPlanner isn't distributed through the Google Play Store, so Android blocks installation from unknown sources by default — that's normal and expected, not a sign the file is unsafe.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📱 Note for Xiaomi/MIUI/HyperOS users</h2>
+      <p style="font-size:0.95rem; margin:0 0 12px;">
+        Xiaomi phones sometimes aggressively close background apps, which can prevent reminders from arriving on time. To make notifications reliable:
+      </p>
+      <ol>
+        <li>Open the recent apps list</li>
+        <li>Find the MyPlanner card, press and hold it</li>
+        <li>Tap the <strong>lock icon (🔒)</strong> to "lock" the app — this stops the system from accidentally closing it</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>About the app</h2>
+      <p style="font-size:0.95rem; margin:0;">
+        MyPlanner keeps all your tasks strictly on your device — nothing is sent to a server except your account login. It works offline, supports 6 languages, and is updated regularly.
+      </p>
+    </div>
+
+    <footer>
+      <a href="privacy-policy.html">Privacy Policy</a> · Contact: bdp69soft@gmail.com
+    </footer>
   </div>
 
-  <div class="card">
-    <h2>📱 Napomena za Xiaomi/MIUI/HyperOS korisnike</h2>
-    <p style="font-size:0.95rem; margin:0 0 12px;">
-      Xiaomi telefoni ponekad agresivno gase pozadinske aplikacije, što može sprečiti da podsetnici stignu na vreme. Da bi notifikacije radile pouzdano:
-    </p>
-    <ol>
-      <li>Otvori listu nedavno korišćenih aplikacija (recent apps)</li>
-      <li>Pronađi karticu MyPlanner-a, pritisni i zadrži prst na njoj</li>
-      <li>Klikni na ikonicu <strong>katanca (🔒)</strong> da "zaključaš" app — time se sprečava da je sistem slučajno ugasi</li>
-    </ol>
-  </div>
+  <!-- SERBIAN -->
+  <div id="sr" class="lang">
+    <div class="tagline">Planer zadataka — jednostavan, privatan, besplatan</div>
 
-  <div class="card">
-    <h2>O aplikaciji</h2>
-    <p style="font-size:0.95rem; margin:0;">
-      MyPlanner čuva sve tvoje zadatke isključivo lokalno na telefonu — ništa se ne šalje na server osim naloga za prijavu. Radi offline, podržava 6 jezika, i redovno se ažurira.
-    </p>
-  </div>
+    <div class="card">
+      <a class="download-btn" href="https://github.com/dumital69/myplanner-download/releases/download/v2.2/app-release.apk" id="downloadLinkSr">⬇️ Preuzmi za Android</a>
+      <p class="version-note">Najnovija verzija · Android 7.0 i noviji</p>
+    </div>
 
-  <footer>
-    <a href="privacy-policy.html">Politika privatnosti</a> · Kontakt: bdp69soft@gmail.com
-  </footer>
+    <div class="card">
+      <h2>Kako instalirati</h2>
+      <ol>
+        <li>Klikni dugme za preuzimanje iznad — fajl (<code>.apk</code>) će se skinuti na telefon.</li>
+        <li>Otvori preuzeti fajl. Ako se pojavi upozorenje "Instalacija iz nepoznatih izvora nije dozvoljena", dodirni <strong>Podešavanja</strong> u tom prozoru i uključi dozvolu za pregledač/aplikaciju preko koje si preuzeo fajl.</li>
+        <li>Vrati se i pokušaj instalaciju ponovo — sad će proći.</li>
+        <li>Otvori MyPlanner i napravi nalog (ili se prijavi ako ga već imaš).</li>
+      </ol>
+      <div class="warn">
+        ⚠️ MyPlanner se ne distribuira preko Google Play prodavnice, pa Android po difoltu blokira instalaciju iz nepoznatih izvora — to je normalno i očekivano, ne znači da je fajl nebezbedan.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📱 Napomena za Xiaomi/MIUI/HyperOS korisnike</h2>
+      <p style="font-size:0.95rem; margin:0 0 12px;">
+        Xiaomi telefoni ponekad agresivno gase pozadinske aplikacije, što može sprečiti da podsetnici stignu na vreme. Da bi notifikacije radile pouzdano:
+      </p>
+      <ol>
+        <li>Otvori listu nedavno korišćenih aplikacija (recent apps)</li>
+        <li>Pronađi karticu MyPlanner-a, pritisni i zadrži prst na njoj</li>
+        <li>Klikni na ikonicu <strong>katanca (🔒)</strong> da "zaključaš" app — time se sprečava da je sistem slučajno ugasi</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>O aplikaciji</h2>
+      <p style="font-size:0.95rem; margin:0;">
+        MyPlanner čuva sve tvoje zadatke isključivo lokalno na telefonu — ništa se ne šalje na server osim naloga za prijavu. Radi offline, podržava 6 jezika, i redovno se ažurira.
+      </p>
+    </div>
+
+    <footer>
+      <a href="privacy-policy.html">Politika privatnosti</a> · Kontakt: bdp69soft@gmail.com
+    </footer>
+  </div>
 
 </div>
+
+<script>
+function setLang(lang) {
+  document.querySelectorAll('.lang').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById(lang).classList.add('active');
+  document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+  document.getElementById('btnSr').classList.toggle('active', lang === 'sr');
+  document.documentElement.lang = lang;
+}
+</script>
+
 </body>
 </html>
