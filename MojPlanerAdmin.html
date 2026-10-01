@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPlanner Admin</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+    :root {
+        --bg: #0f1720;
+        --panel: #172231;
+        --panel2: #1e2c3d;
+        --border: #2c3c50;
+        --text: #e8edf3;
+        --muted: #8fa1b3;
+        --blue: #4da3ff;
+        --green: #34c77b;
+        --red: #e5566a;
+        --orange: #f0a851;
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 24px 16px 60px;
+    }
+    .wrap { width: 100%; max-width: 760px; }
+    h1 {
+        font-size: 20px;
+        margin: 0 0 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+    .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 16px;
+    }
+    label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+    input[type=email], input[type=password], input[type=text] {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        color: var(--text);
+        font-size: 14px;
+        margin-bottom: 14px;
+    }
+    input:focus { outline: none; border-color: var(--blue); }
+    button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 4px;
+    }
+    .btn-blue { background: var(--blue); color: #05202f; }
+    .btn-green { background: var(--green); color: #06301c; }
+    .btn-red { background: var(--red); color: #350409; }
+    .btn-gray { background: var(--panel2); color: var(--text); border: 1px solid var(--border); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #loginPanel { display: block; }
+    #adminPanel { display: none; }
+    .status-box {
+        background: var(--panel2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 14px;
+        display: none;
+    }
+    .status-box .row { display: flex; justify-content: space-between; }
+    .status-box .row span:first-child { color: var(--muted); }
+    .badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .badge-trial { background: rgba(240,168,81,0.15); color: var(--orange); }
+    .badge-paid { background: rgba(52,199,123,0.15); color: var(--green); }
+    .badge-expired { background: rgba(229,86,106,0.15); color: var(--red); }
+    .msg { font-size: 13px; padding: 10px 12px; border-radius: 9px; margin-bottom: 14px; display: none; }
+    .msg-error { background: rgba(229,86,106,0.12); color: #ff8a97; }
+    .msg-ok { background: rgba(52,199,123,0.12); color: #6fe0a8; }
+    .hint { font-size: 11.5px; color: var(--muted); margin-top: -6px; margin-bottom: 14px; line-height: 1.5; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th, td { padding: 9px 8px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+    td.email { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    td.uid { font-family: monospace; font-size: 11px; color: var(--muted); cursor: pointer; }
+    .row-btn { padding: 6px 9px; font-size: 11.5px; font-weight: 600; border: none; border-radius: 7px; cursor: pointer; margin: 0; width: auto; }
+    .refresh-btn { width: auto; padding: 8px 14px; font-size: 12.5px; margin-bottom: 12px; }
+    .loading-row { text-align: center; color: var(--muted); padding: 20px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .logout-link { font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: underline; }
+    textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        color: var(--text);
+        font-size: 14px;
+        margin-bottom: 14px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 70px;
+    }
+    textarea:focus { outline: none; border-color: var(--blue); }
+    select {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        color: var(--text);
+        font-size: 14px;
+        margin-bottom: 14px;
+    }
+    .section-title { font-size: 15px; font-weight: 700; margin: 0 0 14px; display: flex; align-items: center; gap: 6px; }
+    .badge-tested { background: rgba(52,199,123,0.15); color: var(--green); }
+    .badge-sent { background: rgba(77,163,255,0.15); color: var(--blue); }
+    .badge-open { background: rgba(240,168,81,0.15); color: var(--orange); }
+    .ver-changes { white-space: pre-wrap; max-width: 260px; font-size: 12px; color: var(--muted); }
+    .empty-row { text-align: center; color: var(--muted); padding: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>🔑 MyPlanner Admin</h1>
+    <div class="sub">Aktivacija pretplate — BDPSoft</div>
+
+    <div id="loginPanel" class="panel">
+        <div id="loginMsg" class="msg"></div>
+        <label>Admin email</label>
+        <input type="email" id="adminEmail" placeholder="bdp69soft@gmail.com" autocomplete="username">
+        <label>Lozinka</label>
+        <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password">
+        <button class="btn-blue" onclick="doAdminLogin()">Prijavi se</button>
+    </div>
+
+    <div id="adminPanel">
+        <div class="top-bar">
+            <span style="font-size:13px;color:var(--muted);" id="adminEmailLabel"></span>
+            <span class="logout-link" onclick="doAdminLogout()">Odjavi se</span>
+        </div>
+
+        <div class="panel">
+            <div id="lookupMsg" class="msg"></div>
+            <button class="btn-gray refresh-btn" onclick="loadUserTable()">🔄 Osveži listu</button>
+            <input type="text" id="userSearch" placeholder="🔍 Pretraga po mejlu..." oninput="renderUserTable()">
+            <select id="userFilter" onchange="renderUserTable()">
+                <option value="all">Svi korisnici</option>
+                <option value="trial">Samo probni</option>
+                <option value="expiring">Ističe uskoro (≤5 dana)</option>
+                <option value="active">Samo aktivni (plaćeno)</option>
+                <option value="expired">Samo istekli</option>
+            </select>
+            <div id="userSummary" class="hint"></div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>UID</th>
+                            <th>Status</th>
+                            <th>Važi do / Preostalo</th>
+                            <th colspan="2">Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr><td colspan="6" class="loading-row">Učitavanje...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="section-title">🗂️ Praćenje verzija</div>
+            <div id="verMsg" class="msg"></div>
+
+            <label>Verzija (npr. v1.02)</label>
+            <input type="text" id="verNumber" placeholder="v1.02">
+
+            <label>Šta je promenjeno</label>
+            <textarea id="verChanges" placeholder="Fix: ... / Dodato: ..."></textarea>
+
+            <label>Status</label>
+            <select id="verStatus">
+                <option value="open">🟠 Otvoreno / u izradi</option>
+                <option value="sent">🔵 Poslato na testiranje</option>
+                <option value="tested">🟢 Testirano i potvrđeno</option>
+            </select>
+
+            <button class="btn-blue" onclick="addVersion()">+ Dodaj verziju</button>
+
+            <div class="table-wrap" style="margin-top:18px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Verzija</th>
+                            <th>Datum</th>
+                            <th>Šta je promenjeno</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="verTableBody">
+                        <tr><td colspan="5" class="loading-row">Učitavanje...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDDcE6Xs8C8eYAm2NDGUa1IB1RzUGmGh1w",
+        authDomain: "myplanner-android.firebaseapp.com",
+        databaseURL: "https://myplanner-android-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "myplanner-android",
+        storageBucket: "myplanner-android.firebasestorage.app",
+        messagingSenderId: "767415893319",
+        appId: "1:767415893319:web:45f97d62867aad0f862062"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    const ADMIN_EMAIL = 'bdp69soft@gmail.com';
+    let currentUid = null;
+
+    function showMsg(elId, text, type) {
+        const el = document.getElementById(elId);
+        el.textContent = text;
+        el.className = 'msg msg-' + type;
+        el.style.display = 'block';
+    }
+    function hideMsg(elId) {
+        document.getElementById(elId).style.display = 'none';
+    }
+
+    window.doAdminLogin = function() {
+        hideMsg('loginMsg');
+        const email = document.getElementById('adminEmail').value.trim();
+        const pass = document.getElementById('adminPass').value;
+        if (!email || !pass) {
+            showMsg('loginMsg', 'Unesite email i lozinku.', 'error');
+            return;
+        }
+        auth.signInWithEmailAndPassword(email, pass).catch(function(err) {
+            showMsg('loginMsg', 'Greška pri prijavi: ' + err.message, 'error');
+        });
+    };
+
+    window.doAdminLogout = function() {
+        auth.signOut();
+    };
+
+    auth.onAuthStateChanged(function(user) {
+        if (user && user.email === ADMIN_EMAIL) {
+            document.getElementById('loginPanel').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('adminEmailLabel').textContent = user.email;
+            loadUserTable();
+            loadVersions();
+        } else if (user && user.email !== ADMIN_EMAIL) {
+            showMsg('loginMsg', 'Ovaj nalog nema admin ovlašćenja.', 'error');
+            auth.signOut();
+        } else {
+            document.getElementById('loginPanel').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+    });
+
+    function badgeFor(sub) {
+        const now = new Date();
+        if (!sub) return '<span class="badge badge-trial">?</span>';
+        if (sub.status === 'paid') {
+            if (sub.paidUntil && new Date(sub.paidUntil) > now) {
+                return '<span class="badge badge-paid">AKTIVNA</span>';
+            }
+            return '<span class="badge badge-expired">ISTEKLA</span>';
+        }
+        return '<span class="badge badge-trial">PROBNI</span>';
+    }
+
+    // Isti broj dana probnog perioda kao u aplikaciji (mora ostati usklađeno
+    // sa TRIAL_DAYS konstantom u www/index.html).
+    const TRIAL_DAYS = 30;
+    const EXPIRING_SOON_DAYS = 5;
+
+    function daysBetween(fromISO, toDate) {
+        const from = new Date(fromISO);
+        const diffMs = toDate.getTime() - from.getTime();
+        return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    }
+
+    // Vraća info objekat o statusu korisnika: kategorija (za filter/sortiranje),
+    // tekst preostalog vremena i broj dana do isteka (za sortiranje po hitnosti).
+    function subInfo(sub) {
+        const now = new Date();
+        if (!sub) return { category: 'trial', remainingText: '—', daysLeft: 9999 };
+
+        if (sub.status === 'paid') {
+            if (sub.paidUntil && new Date(sub.paidUntil) > now) {
+                const daysLeft = daysBetween(now.toISOString(), new Date(sub.paidUntil));
+                return { category: 'active', remainingText: sub.paidUntil.split('T')[0] + ' (još ' + daysLeft + ' d)', daysLeft: daysLeft };
+            }
+            return { category: 'expired', remainingText: sub.paidUntil ? sub.paidUntil.split('T')[0] + ' (isteklo)' : 'isteklo', daysLeft: -1 };
+        }
+
+        // Trial korisnik
+        const used = sub.trialStart ? daysBetween(sub.trialStart, now) : 0;
+        const daysLeft = TRIAL_DAYS - used;
+        if (daysLeft <= 0) {
+            return { category: 'expired', remainingText: 'probni istekao', daysLeft: -1 };
+        }
+        if (daysLeft <= EXPIRING_SOON_DAYS) {
+            return { category: 'expiring', remainingText: 'probni: još ' + daysLeft + ' d', daysLeft: daysLeft };
+        }
+        return { category: 'trial', remainingText: 'probni: još ' + daysLeft + ' d', daysLeft: daysLeft };
+    }
+
+    let allUserRows = []; // keš poslednje učitane liste, da filter/pretraga ne zovu Firebase ponovo
+
+    window.loadUserTable = function() {
+        hideMsg('lookupMsg');
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Učitavanje...</td></tr>';
+
+        database.ref('userIndex').once('value').then(function(snap) {
+            const index = snap.val() || {};
+            const uids = Object.keys(index);
+
+            if (uids.length === 0) {
+                allUserRows = [];
+                tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Nema korisnika u indeksu (pojaviće se čim se korisnik prijavi u aplikaciju na novijoj verziji).</td></tr>';
+                document.getElementById('userSummary').textContent = '';
+                return;
+            }
+
+            const promises = uids.map(function(uid) {
+                return database.ref('users/' + uid + '/subscription').once('value').then(function(subSnap) {
+                    return { uid: uid, email: index[uid], sub: subSnap.val() };
+                });
+            });
+
+            Promise.all(promises).then(function(rows) {
+                allUserRows = rows;
+                renderUserTable();
+            });
+        }).catch(function(err) {
+            showMsg('lookupMsg', 'Greška pri učitavanju liste: ' + err.message, 'error');
+            tbody.innerHTML = '';
+        });
+    };
+
+    // Filtrira/pretražuje/sortira već učitane redove (allUserRows) bez novog
+    // poziva ka Firebase-u - poziva se pri svakom kucanju u pretrazi ili
+    // promeni filtera.
+    window.renderUserTable = function() {
+        const tbody = document.getElementById('userTableBody');
+        const searchTerm = document.getElementById('userSearch').value.trim().toLowerCase();
+        const filterVal = document.getElementById('userFilter').value;
+
+        let rows = allUserRows.map(function(r) {
+            return Object.assign({}, r, { info: subInfo(r.sub) });
+        });
+
+        // Brojač po kategorijama (računat pre filtera po statusu, ali posle pretrage teksta)
+        const searchedRows = searchTerm
+            ? rows.filter(function(r) { return (r.email || '').toLowerCase().indexOf(searchTerm) !== -1; })
+            : rows;
+
+        const counts = { trial: 0, expiring: 0, active: 0, expired: 0 };
+        searchedRows.forEach(function(r) { counts[r.info.category] = (counts[r.info.category] || 0) + 1; });
+        document.getElementById('userSummary').textContent =
+            searchedRows.length + ' korisnika — ' +
+            counts.active + ' aktivnih, ' +
+            counts.trial + ' probnih, ' +
+            counts.expiring + ' ističe uskoro, ' +
+            counts.expired + ' isteklo';
+
+        if (filterVal !== 'all') {
+            rows = searchedRows.filter(function(r) { return r.info.category === filterVal; });
+        } else {
+            rows = searchedRows;
+        }
+
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Nema korisnika koji odgovaraju pretrazi/filteru.</td></tr>';
+            return;
+        }
+
+        // Sortiranje po hitnosti: prvo oni kojima nešto ističe najskorije
+        // (ističe uskoro, pa istekli, pa aktivni po preostalim danima, pa
+        // ostali probni), na kraju azbučno po mejlu kao tie-breaker.
+        const catOrder = { expiring: 0, expired: 1, active: 2, trial: 3 };
+        rows.sort(function(a, b) {
+            const catDiff = catOrder[a.info.category] - catOrder[b.info.category];
+            if (catDiff !== 0) return catDiff;
+            const dayDiff = a.info.daysLeft - b.info.daysLeft;
+            if (dayDiff !== 0) return dayDiff;
+            return (a.email || '').localeCompare(b.email || '');
+        });
+
+        tbody.innerHTML = rows.map(function(r) {
+            const safeUid = r.uid.replace(/'/g, '');
+            const safeEmail = (r.email || '').replace(/'/g, '');
+            return '<tr>' +
+                '<td class="email" title="' + r.email + '">' + r.email + '</td>' +
+                '<td class="uid" title="Klikni da kopiraš" onclick="copyUid(\'' + safeUid + '\')">' + r.uid.slice(0, 10) + '…</td>' +
+                '<td>' + badgeFor(r.sub) + '</td>' +
+                '<td>' + r.info.remainingText + '</td>' +
+                '<td><button class="row-btn btn-green" onclick="activateSubscription(\'' + safeUid + '\', \'' + safeEmail + '\')">✅ Aktiviraj</button></td>' +
+                '<td><button class="row-btn btn-red" onclick="revertToTrial(\'' + safeUid + '\', \'' + safeEmail + '\')">↩️ Deaktiviraj</button></td>' +
+                '</tr>';
+        }).join('');
+    };
+
+    window.copyUid = function(uid) {
+        navigator.clipboard.writeText(uid).then(function() {
+            showMsg('lookupMsg', 'UID kopiran: ' + uid, 'ok');
+        });
+    };
+
+    window.activateSubscription = function(uid, email) {
+        if (!confirm('Aktivirati pretplatu za:\n' + (email || uid) + '\n\nna narednih 365 dana?')) return;
+
+        const subRef = database.ref('users/' + uid + '/subscription');
+        subRef.once('value').then(function(snap) {
+            const sub = snap.val() || {};
+            const now = new Date();
+            let base = now;
+            if (sub.paidUntil && new Date(sub.paidUntil) > now) {
+                base = new Date(sub.paidUntil);
+            }
+            const newUntil = new Date(base.getTime() + 365 * 24 * 60 * 60 * 1000);
+
+            return subRef.update({
+                status: 'paid',
+                paidUntil: newUntil.toISOString()
+            });
+        }).then(function() {
+            showMsg('lookupMsg', '✅ Pretplata aktivirana.', 'ok');
+            loadUserTable();
+        }).catch(function(err) {
+            showMsg('lookupMsg', 'Greška pri upisu: ' + err.message, 'error');
+        });
+    };
+
+    window.revertToTrial = function(uid, email) {
+        if (!confirm('Vratiti korisnika (' + (email || uid) + ') na probni period (poništiti plaćenu pretplatu)?')) return;
+
+        const subRef = database.ref('users/' + uid + '/subscription');
+        subRef.once('value').then(function(snap) {
+            const sub = snap.val() || {};
+            const updates = {
+                status: 'trial',
+                paidUntil: null
+            };
+            // Ako nalog nikad nije imao trialStart (npr. nalog kreiran ali
+            // nikad nije uspešno inicijalizovan), postavi ga na danas -
+            // inače bi app tretirala izračun probnog perioda kao nevažeći
+            // (NaN) i odmah zaključala korisnika, umesto da mu da pravi
+            // probni period.
+            if (!sub.trialStart) {
+                updates.trialStart = new Date().toISOString();
+            }
+            return subRef.update(updates);
+        }).then(function() {
+            showMsg('lookupMsg', '↩️ Vraćeno na probni period.', 'ok');
+            loadUserTable();
+        }).catch(function(err) {
+            showMsg('lookupMsg', 'Greška pri upisu: ' + err.message, 'error');
+        });
+    };
+
+    // ============================================================
+    //  PRAĆENJE VERZIJA (changelog)
+    // ============================================================
+    function statusBadge(status) {
+        if (status === 'tested') return '<span class="badge badge-tested">TESTIRANO</span>';
+        if (status === 'sent') return '<span class="badge badge-sent">POSLATO</span>';
+        return '<span class="badge badge-open">OTVORENO</span>';
+    }
+
+    window.addVersion = function() {
+        hideMsg('verMsg');
+        const number = document.getElementById('verNumber').value.trim();
+        const changes = document.getElementById('verChanges').value.trim();
+        const status = document.getElementById('verStatus').value;
+
+        if (!number) {
+            showMsg('verMsg', 'Unesite broj verzije.', 'error');
+            return;
+        }
+
+        database.ref('appVersions').push({
+            number: number,
+            changes: changes,
+            status: status,
+            date: new Date().toISOString(),
+            createdBy: auth.currentUser ? auth.currentUser.email : ''
+        }).then(function() {
+            document.getElementById('verNumber').value = '';
+            document.getElementById('verChanges').value = '';
+            document.getElementById('verStatus').value = 'open';
+            showMsg('verMsg', '✅ Verzija dodata.', 'ok');
+            loadVersions();
+        }).catch(function(err) {
+            showMsg('verMsg', 'Greška pri upisu: ' + err.message, 'error');
+        });
+    };
+
+    window.deleteVersion = function(key) {
+        if (!confirm('Obrisati ovaj unos iz istorije verzija?')) return;
+        database.ref('appVersions/' + key).remove().then(function() {
+            loadVersions();
+        }).catch(function(err) {
+            showMsg('verMsg', 'Greška pri brisanju: ' + err.message, 'error');
+        });
+    };
+
+    window.loadVersions = function() {
+        const tbody = document.getElementById('verTableBody');
+        tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Učitavanje...</td></tr>';
+
+        database.ref('appVersions').once('value').then(function(snap) {
+            const data = snap.val() || {};
+            const rows = Object.keys(data).map(function(key) {
+                return Object.assign({ key: key }, data[key]);
+            });
+
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Još nema unetih verzija.</td></tr>';
+                return;
+            }
+
+            rows.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+
+            tbody.innerHTML = rows.map(function(r) {
+                const dateStr = r.date ? new Date(r.date).toLocaleDateString('sr-RS') : '—';
+                const changesEsc = (r.changes || '').replace(/</g, '&lt;');
+                return '<tr>' +
+                    '<td><strong>' + (r.number || '') + '</strong></td>' +
+                    '<td>' + dateStr + '</td>' +
+                    '<td class="ver-changes">' + changesEsc + '</td>' +
+                    '<td>' + statusBadge(r.status) + '</td>' +
+                    '<td><button class="row-btn btn-red" onclick="deleteVersion(\'' + r.key + '\')">🗑️</button></td>' +
+                    '</tr>';
+            }).join('');
+        }).catch(function(err) {
+            showMsg('verMsg', 'Greška pri učitavanju: ' + err.message, 'error');
+            tbody.innerHTML = '';
+        });
+    };
+</script>
+</body>
+</html>
